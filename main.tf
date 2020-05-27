@@ -403,27 +403,33 @@ resource "kubernetes_deployment" "this" {
             protocol       = "TCP"
           }
 
-          readiness_probe {
-            http_get {
-              path   = "/healthz"
-              port   = "health"
-              scheme = "HTTP"
-            }
+          dynamic "readiness_probe" {
+            for_each = var.health_check == true ? ["true"] : []
+            content {
+              http_get {
+                path   = "/healthz"
+                port   = "health"
+                scheme = "HTTP"
+              }
 
-            initial_delay_seconds = 30
-            period_seconds        = 60
-            timeout_seconds       = 3
+              initial_delay_seconds = 30
+              period_seconds        = 60
+              timeout_seconds       = 3
+            }
           }
 
-          liveness_probe {
-            http_get {
-              path   = "/healthz"
-              port   = "health"
-              scheme = "HTTP"
-            }
+          dynamic "liveness_probe" {
+            for_each = var.health_check == true ? ["true"] : []
+            content {
+              http_get {
+                path   = "/healthz"
+                port   = "health"
+                scheme = "HTTP"
+              }
 
-            initial_delay_seconds = 60
-            period_seconds        = 60
+              initial_delay_seconds = 60
+              period_seconds        = 60
+            }
           }
         }
 

@@ -69,3 +69,9 @@ variable "aws_alb_ingress_controller_version" {
   type        = string
   default     = "1.1.6"
 }
+
+variable "health_check" {
+  description = "Liveness check for the controller"
+  type        = bool
+  default  = true
+}
